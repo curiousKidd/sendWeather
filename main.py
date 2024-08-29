@@ -2,6 +2,8 @@ import requests
 import os
 from datetime import datetime, timedelta
 
+# chat gpt를 활용하면... 개발할 수없을까?
+
 # 서울의 위도와 경도
 LATITUDE = 37.5665
 LONGITUDE = 126.9780

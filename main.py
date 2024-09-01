@@ -1,32 +1,18 @@
-import requests
-import os
-from datetime import datetime, timedelta
+import openai, requests
 
 # chat gpt를 활용하면... 개발할 수없을까?
+# # 날씨 API 설정
+weather_api_key = "YOUR_WEATHER_API_KEY"
+location = "Seoul"
+weather_url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={weather_api_key}"
 
-# 서울의 위도와 경도
-LATITUDE = 37.5665
-LONGITUDE = 126.9780
+# GPT API 설정
+openai.api_key = "YOUR_OPENAI_API_KEY"
 
-URL = "https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Asia/Seoul"
+# 날씨 정보 가져오기
+weather_response = requests.get(weather_url)
+weather_data = weather_response.json()
 
-
-def get_tomorrow_weather():
-    response = requests.get(URL)
-    data = response.json()
-
-    # 내일의 날짜 구하기
-    tomorrow_index = 1
-
-    # 내일 날씨 정보 추출
-    daily = data['daily']
-    max_temp = daily['temperature_2m_max'][tomorrow_index]
-    min_temp = daily['temperature_2m_min'][tomorrow_index]
-    precipitation = daily['precipitation_sum'][tomorrow_index]
-
-    weather_message = ("내일의 날씨:\n"
-                       "최고 기온: {max_temp}°C\n"
-                       "최저 기온: {min_temp}°C\n"
-                       "강수량: {precipitation}mm")
-
-    return weather_message
+# GPT에 질문 생성 및 응답 받기
+question = f"Seoul의 현재 날씨는 다음과 같습니다: {weather_data}. 이에 대한 요약을 해주세요."
+# response = openai.Completion.create(engine="text-davinci-004", prompt=question, max_tokens=100)

@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Pipenv (sendWeather)" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" project-jdk-name="Pipenv (sendWeather)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" project-jdk-name="Python 3.9 (sendWeather)" project-jdk-type="Python SDK" />
 </project>

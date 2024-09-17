@@ -6,9 +6,12 @@ def get_tomorrow_weather():
     # chat gpt를 활용하면... 개발할 수없을까?
 
     # 날씨 API 설정
-    weather_api_key = "YOUR_WEATHER_API_KEY"
+    weather_api_key = "43604b3735cff561b8407ea5f50d6acc"
     location = "Seoul"
     weather_url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={weather_api_key}"
+
+    print("111111111111111111")
+    print("111111111111111111")
 
     # GPT API 설정
     openai.api_key = "YOUR_OPENAI_API_KEY"

@@ -9,6 +9,7 @@ client = OpenAI(api_key=os.getenv("OPEN_AI_KEY"))
 
 def get_tomorrow_weather():
     # chat gpt를 활용하면... 개발할 수없을까?
+    # 왜 안돼.....
 
     print(os.getenv("OPEN_AI_KEY"))
 

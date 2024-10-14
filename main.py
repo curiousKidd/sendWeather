@@ -1,6 +1,4 @@
 from openai import OpenAI
-
-
 import requests
 import os
 
@@ -29,10 +27,11 @@ def get_tomorrow_weather():
 
     # GPT에 질문 생성 및 응답 받기
     text = f"Seoul의 현재 날씨는 다음과 같습니다: {weather_data}. 이에 대한 요약을 해주세요."
-    response = client.completions.create(# model="gpt-4o-mini",
-    model="gpt-3.5-turbo-instruct",
-    prompt=text,
-    max_tokens=300)
+    response = client.chat.completions.create(
+            # model="gpt-4o-mini",
+            model="gpt-3.5-turbo-instruct",
+            prompt=text
+        )
 
     # 응답 출력 또는 카카오톡 메시지로 보내기
     return response.choices[0].text

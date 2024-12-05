@@ -2,6 +2,7 @@ from openai import OpenAI
 import requests
 import os
 
+#// 파이썬 설치부터 다시 하는중
 client = OpenAI(api_key=os.getenv("OPEN_AI_KEY")) 
 
 

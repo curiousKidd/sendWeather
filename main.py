@@ -3,7 +3,8 @@ import requests
 import os
 
 #// 파이썬 설치부터 다시 하는중
-client = OpenAI(api_key=os.getenv("OPEN_AI_KEY")) 
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) 
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) 
 
 
 def get_tomorrow_weather():
@@ -11,7 +12,7 @@ def get_tomorrow_weather():
     # 왜 안돼.....
     # 짜증이 나기 시작하네
 
-    print(os.getenv("OPEN_AI_KEY"))
+    print(os.getenv("OPENAI_API_KEY"))
 
     # 날씨 API 설정
     weather_api_key = ""
@@ -40,4 +41,4 @@ def get_tomorrow_weather():
 
 
 
-get_tomorrow_weather()
+# get_tomorrow_weather()

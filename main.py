@@ -1,6 +1,7 @@
 from openai import OpenAI
 import requests
 import os
+from datetime import datetime, timedelta
 
 
 def get_tomorrow_weather():
@@ -8,7 +9,7 @@ def get_tomorrow_weather():
     # 왜 안돼.....
     # 짜증이 나기 시작하네
 
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) 
+
 
     # 날씨 API 설정
     weather_api_key = os.environ.get("weather_api_key")
@@ -24,40 +25,38 @@ def get_tomorrow_weather():
     weather_data = weather_response.json()
 
     # 내일 데이터 필터링
-    from datetime import datetime, timedelta
+    
     tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
     tomorrow_data = [entry for entry in weather_data["list"] if entry["dt_txt"].startswith(tomorrow)]
 
-    print("toto",tomorrow_data)
-
     # 내일 날씨 요약 생성
-    # if not tomorrow_data:
-    #     return "내일 날씨 정보를 찾을 수 없습니다."
-    
+    if not tomorrow_data:
+        return "내일 날씨 정보를 찾을 수 없습니다."
+
     temps = [entry["main"]["temp"] for entry in tomorrow_data]
     conditions = [entry["weather"][0]["description"] for entry in tomorrow_data]
     max_temp = max(temps)
     min_temp = min(temps)
     common_condition = max(set(conditions), key=conditions.count)
 
+    # GPT 요약 요청 (옵션)  
     summary = f"서울의 날씨는 최고온도 {max_temp}도, 최저온도 {min_temp}도, 날씨는 {common_condition}입니다."
+    print("summary = ", summary)
 
-    # GPT 요약 요청 (옵션)
-    
-
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) 
 
     # GPT에 질문 생성 및 응답 받기
-    text = f"다음 정보를 간단히 요약해 주세요: {summary}"
-    response = client.completions.create(
-        # model="gpt-4o-mini",
-        model="gpt-3.5-turbo",
-        prompt=text,
-        max_tokens=100,
-        temperature=0
-        )
+    response = client.chat.completions.create(# model="gpt-4o-mini",
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "너는 날씨 정보를 요약하는 어시스턴트야."},
+        {"role": "user", "content": f"다음 정보를 간단히 요약해 줘: {summary}"}
+    ],
+    max_tokens=100,
+    temperature=0)
 
     # 응답 출력 또는 카카오톡 메시지로 보내기
-    return response.choices[0].text
+    return response.choices[0].message.content
 
 
 weather_message = get_tomorrow_weather()

@@ -169,6 +169,21 @@ def get_open_ai():
     # 응답 출력 또는 카카오톡 메시지로 보내기
     return response.choices[0].message.content
 
+def send_kakao_message(message, user_id):
+    kakao_api_url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
+    headers = {"Authorization": f"Bearer YOUR_KAKAO_ACCESS_TOKEN"}  # 대체 텍스트
+    
+    data = {
+        "template_object": {
+            "object_type": "text",
+            "text": message,
+            "link": {"web_url": "https://your-website.com"}
+        }
+    }
+
+    response = requests.post(kakao_api_url, headers=headers, json=data)
+    return response.status_code
+
 # 예시 호출
 weather_message = get_open_ai()
 print(weather_message)

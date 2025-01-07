@@ -3,6 +3,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+import json
 
 
 # .env 파일에서 환경 변수 로드
@@ -170,8 +171,10 @@ def get_open_ai():
     return response.choices[0].message.content
 
 def send_kakao_message(message, user_id):
+    KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
+
     kakao_api_url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
-    headers = {"Authorization": f"Bearer YOUR_KAKAO_ACCESS_TOKEN"}  # 대체 텍스트
+    headers = {"Authorization": f"Bearer KAKAO_API_KEY"}  # 대체 텍스트
     
     data = {
         "template_object": {
@@ -184,6 +187,8 @@ def send_kakao_message(message, user_id):
     response = requests.post(kakao_api_url, headers=headers, json=data)
     return response.status_code
 
+
+
 # 예시 호출
-weather_message = get_open_ai()
-print(weather_message)
+# weather_message = get_open_ai()
+# print(weather_message)

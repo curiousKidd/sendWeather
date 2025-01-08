@@ -1,30 +1,34 @@
 import requests
 
-# chat gpt를 활용하면... 개발할 수없을까?
+# def get_tomorrow_weather():
+#      # 날씨 API 설정
+#     weather_api_key = os.environ.get("weather_api_key")
+#     location = "Seoul"
+#     forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?q={location}&appid={weather_api_key}&units=metric"
 
-# 서울의 위도와 경도
-LATITUDE = 37.5665
-LONGITUDE = 126.9780
+#     # 날씨 API 호출
+#     weather_response = requests.get(forecast_url)
+#     if weather_response.status_code != 200:
+#         return "날씨 정보를 가져오는 데 실패했습니다."
 
-URL = "https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Asia/Seoul"
+#     # 날씨 정보 가져오기
+#     weather_data = weather_response.json()
 
+#     # 내일 데이터 필터링
+    
+#     tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+#     tomorrow_data = [entry for entry in weather_data["list"] if entry["dt_txt"].startswith(tomorrow)]
 
-def get_tomorrow_weather():
-    response = requests.get(URL)
-    data = response.json()
+#     # 내일 날씨 요약 생성
+#     if not tomorrow_data:
+#         return "내일 날씨 정보를 찾을 수 없습니다."
 
-    # 내일의 날짜 구하기
-    tomorrow_index = 1
-
-    # 내일 날씨 정보 추출
-    daily = data['daily']
-    max_temp = daily['temperature_2m_max'][tomorrow_index]
-    min_temp = daily['temperature_2m_min'][tomorrow_index]
-    precipitation = daily['precipitation_sum'][tomorrow_index]
-
-    weather_message = ("내일의 날씨:\n"
-                       "최고 기온: {max_temp}°C\n"
-                       "최저 기온: {min_temp}°C\n"
-                       "강수량: {precipitation}mm")
-
-    return weather_message
+#     temps = [entry["main"]["temp"] for entry in tomorrow_data]
+#     conditions = [entry["weather"][0]["description"] for entry in tomorrow_data]
+#     max_temp = max(temps)
+#     min_temp = min(temps)
+#     common_condition = max(set(conditions), key=conditions.count)
+#      # GPT 요약 요청 (옵션)  
+#     summary = f"서울의 날씨는 최고온도 {max_temp}도, 최저온도 {min_temp}도, 날씨는 {common_condition}입니다."
+#     print("summary = ", summary)
+#     return summary

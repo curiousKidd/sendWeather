@@ -9,39 +9,6 @@ import json
 # .env 파일에서 환경 변수 로드
 load_dotenv()
 
-def get_tomorrow_weather():
-     # 날씨 API 설정
-    weather_api_key = os.environ.get("weather_api_key")
-    location = "Seoul"
-    forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?q={location}&appid={weather_api_key}&units=metric"
-
-    # 날씨 API 호출
-    weather_response = requests.get(forecast_url)
-    if weather_response.status_code != 200:
-        return "날씨 정보를 가져오는 데 실패했습니다."
-
-    # 날씨 정보 가져오기
-    weather_data = weather_response.json()
-
-    # 내일 데이터 필터링
-    
-    tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-    tomorrow_data = [entry for entry in weather_data["list"] if entry["dt_txt"].startswith(tomorrow)]
-
-    # 내일 날씨 요약 생성
-    if not tomorrow_data:
-        return "내일 날씨 정보를 찾을 수 없습니다."
-
-    temps = [entry["main"]["temp"] for entry in tomorrow_data]
-    conditions = [entry["weather"][0]["description"] for entry in tomorrow_data]
-    max_temp = max(temps)
-    min_temp = min(temps)
-    common_condition = max(set(conditions), key=conditions.count)
-     # GPT 요약 요청 (옵션)  
-    summary = f"서울의 날씨는 최고온도 {max_temp}도, 최저온도 {min_temp}도, 날씨는 {common_condition}입니다."
-    print("summary = ", summary)
-    return summary
-
 def get_tomorrow_weather_kma(location: str):
     # 기상청 API 키 가져오기
     # service_key = os.environ.get("KMA_API_KEY")  # 환경변수에 API 키 저장
@@ -131,7 +98,6 @@ def get_tomorrow_weather_kma(location: str):
 
     return summary
 
-
 def get_open_ai():
     location = "Seoul"
     summary = get_tomorrow_weather_kma(location)
@@ -170,22 +136,7 @@ def get_open_ai():
     # 응답 출력 또는 카카오톡 메시지로 보내기
     return response.choices[0].message.content
 
-def send_kakao_message(message, user_id):
-    KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
 
-    kakao_api_url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
-    headers = {"Authorization": f"Bearer KAKAO_API_KEY"}  # 대체 텍스트
-    
-    data = {
-        "template_object": {
-            "object_type": "text",
-            "text": message,
-            "link": {"web_url": "https://your-website.com"}
-        }
-    }
-
-    response = requests.post(kakao_api_url, headers=headers, json=data)
-    return response.status_code
 
 
 

@@ -106,8 +106,8 @@ def get_open_ai():
 
     # GPT에 질문 생성 및 응답 받기
     response = client.chat.completions.create(
-        # model="gpt-4o-mini",
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
+        # model="gpt-3.5-turbo",
         messages=[
         #     {
         #         "role": "system",
@@ -141,5 +141,5 @@ def get_open_ai():
 
 
 # 예시 호출
-# weather_message = get_open_ai()
+weather_message = get_open_ai()
 # print(weather_message)

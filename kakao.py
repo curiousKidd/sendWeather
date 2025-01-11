@@ -9,12 +9,11 @@ load_dotenv()
 CLIENT_ID = os.getenv("KAKAO_REST_API_KEY") # 발급받은 restAPI KEY
 REDIRECT_URI =  "http://localhost:3000" # 등록한 Redirect URI
 OAUTH_CODE = os.getenv("KAKAO_OAUTH") # 발급받은 restAPI KEY
-
-print(CLIENT_ID)
+scope = "talk_message"  # 필요한 권한 추가
 
 # 카카오 로그인 인증 || 1회성 코드 발급
 def kakao_get_code():
-    auth_url = f"https://kauth.kakao.com/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
+    auth_url = f"https://kauth.kakao.com/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope={scope}"
 
     print("다음 URL에 접속해 인증하세요:")
     print(auth_url)
@@ -114,18 +113,15 @@ def send_kakao_message(message_text):
     }
 
     data = {
-        "template_object": f'{
+        "template_object": json.dumps(
             {
-                "object_type": "text", 
-                "text": "{message_text}", 
-                "link": {
-                    {
-                        "web_url": "https://weather.com", 
-                        "mobile_web_url": "https://weather.com"
-                        }
-                    }
+            "object_type": "text",
+            "text": message_text,
+            "link": {
+                "web_url": "https://weather.com",
+                "mobile_web_url": "https://weather.com"
             }
-        }'
+        })  
     }
 
     response = requests.post(message_url, headers=headers, data=data)
@@ -143,4 +139,4 @@ def send_kakao_message(message_text):
 
 # kakao_get_code()
 
-kakao_oauth_token()
+# kakao_oauth_token()

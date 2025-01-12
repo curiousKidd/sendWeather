@@ -8,13 +8,29 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install flask
+# Flask 설치 (필요 시)
+# RUN pip install flask
+
+# Cron 설치
+RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y vim
 
 # 프로젝트 파일 복사
 COPY . .
 
 # 환경 변수 파일 복사 (선택사항)
-COPY .env .
+COPY .env /app/.env
 
-# 컨테이너 시작 시 실행할 명령어
-CMD ["python", "main.py"]
+# 크론탭 파일 복사 및 권한 설정
+COPY crontab /etc/cron.d/my-cron-job
+RUN chmod 0644 /etc/cron.d/my-cron-job
+
+# # 컨테이너 시작 시 실행할 명령어
+# CMD ["python", "main.py"]
+
+# Cron 로그 파일 생성
+RUN touch /var/log/cron.log
+
+# Cron 시작 및 백그라운드 실행
+CMD export $(cat /app/.env | xargs) && cron && tail -f /var/log/cron.log
+

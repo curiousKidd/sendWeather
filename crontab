@@ -1,0 +1,2 @@
+# 매일 저녁 9시에 main.py 실행
+0 21 * * * python /app/main.py >> /var/log/main.log 2>&1

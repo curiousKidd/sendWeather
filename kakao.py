@@ -3,7 +3,7 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# .env 파일에서 환경 변수 로드
+# .env 파일 로드
 load_dotenv()
 
 CLIENT_ID = os.getenv("KAKAO_REST_API_KEY") # 발급받은 restAPI KEY

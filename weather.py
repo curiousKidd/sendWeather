@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 
-# .env 파일에서 환경 변수 로드
+# .env 파일 로드
 load_dotenv()
 
 def get_tomorrow_weather(location: str):
@@ -11,7 +11,7 @@ def get_tomorrow_weather(location: str):
     # 날씨 정보 api 호출
     weather_data = get_weather_api(location)
 
-    
+
     items = weather_data["response"]["body"]["items"]["item"]
 
     # 내일 날짜 계산
@@ -43,6 +43,10 @@ def get_tomorrow_weather(location: str):
             "pty": pty_map.get(pty, "알 수 없음"),
             "sky": sky_map.get(sky, "알 수 없음")
         })
+
+    summary.append({
+        "date": tomorrow
+    })
 
     return summary
 

@@ -26,11 +26,12 @@ COPY crontab /etc/cron.d/my-cron-job
 RUN chmod 0644 /etc/cron.d/my-cron-job
 
 # # 컨테이너 시작 시 실행할 명령어
-# CMD ["python", "main.py"]
+CMD ["python", "main.py"]
 
 # Cron 로그 파일 생성
 RUN touch /var/log/cron.log
 
 # Cron 시작 및 백그라운드 실행
-CMD export $(cat /app/.env | xargs) && cron && tail -f /var/log/cron.log
+# CMD export $(cat /app/.env | xargs) && cron && tail -f /var/log/cron.log
+# CMD ["bash", "-c", "cron && tail -f /var/log/cron.log"]
 

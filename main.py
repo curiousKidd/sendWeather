@@ -25,7 +25,7 @@ def get_open_ai_message():
 
     # API 키 설정
     api_key = os.getenv("OPENAI_API_KEY")
-    print("api_key = ",api_key)
+    # print("api_key = ",api_key)
     if not api_key:
         raise ValueError("OPENAI_API_KEY is not set!")
 

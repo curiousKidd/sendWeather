@@ -1,3 +1,4 @@
-# 매일 저녁 9시에 main.py 실행
-00 23 * * * /usr/local/bin/python /app/main.py >> /var/log/cron.log 2>&1
+# 매일 저녁 9시에 main.py 
+30 21 * * * /usr/local/bin/python /app/main.py >> /var/log/cron.log 2>&1
 
+# * * * * * echo "Cron is working at $(date)" >> /var/log/cron.log 2>&1

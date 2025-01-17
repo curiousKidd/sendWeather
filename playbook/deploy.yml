@@ -1,0 +1,36 @@
+# deploy.yml
+---
+- name: Deploy Python Project to NAS
+  hosts: nas
+  become: true
+
+  tasks:
+    # - name: Ensure Docker is installed
+    #   ansible.builtin.shell: |
+    #     if ! docker --version > /dev/null 2>&1; then
+    #       sudo apt-get update
+    #       sudo apt-get install -y docker.io
+    #     fi
+
+    - name: Ensure Docker Compose is installed
+      ansible.builtin.shell: |
+        if ! docker-compose --version > /dev/null 2>&1; then
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+        fi
+
+    - name: Copy project files to NAS
+      ansible.builtin.synchronize:
+        src: "{{ playbook_dir }}/.."
+        dest: /volume2/docker/
+        rsync_opts:
+          - "--exclude=venv"
+          - "--exclude=playbook"
+        delete: false
+        archive: true
+        compress: true
+
+    - name: Run Docker Compose
+      ansible.builtin.shell: |
+        cd /volume2/docker/send-seather
+        docker-compose up -d

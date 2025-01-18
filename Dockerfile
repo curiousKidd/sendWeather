@@ -9,7 +9,7 @@ ENV TZ=Asia/Seoul
 # RUN pip install flask
 
 # Cron 설치
-RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y cron
 RUN apt-get install -y vim
 
 # 작업 디렉토리 설정
@@ -35,6 +35,7 @@ RUN crontab /etc/cron.d/my-cron-job
 
 # Cron 로그 파일 생성
 RUN touch /var/log/cron.log
+
 
 # Cron 시작 및 백그라운드 실행
 # CMD export $(cat /app/.env | xargs) && cron && tail -f /var/log/cron.log

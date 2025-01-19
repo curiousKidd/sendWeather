@@ -51,14 +51,14 @@ def kakao_oauth_token():
 # 토큰 저장
 def save_tokens(access_token, refresh_token):
     tokens = {"access_token": access_token, "refresh_token": refresh_token}
-    with open("/app/tokens.json", "w") as f:
+    with open("tokens.json", "w") as f:
         json.dump(tokens, f)
 
 
 # 토큰 로드 함수
 def load_tokens():
     try:
-        with open("/app/tokens.json", "r") as f:
+        with open("tokens.json", "r") as f:
             tokens = json.load(f)
         return tokens
     except FileNotFoundError:

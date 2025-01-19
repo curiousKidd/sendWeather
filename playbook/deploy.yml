@@ -1,16 +1,37 @@
-# deploy.yml
 ---
-- name: Deploy Python Project to NAS
+# deploy.yml
+
+- name: Deploy application to NAS
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Find files excluding specific patterns on local machine
+      ansible.builtin.find:
+        paths: "{{ playbook_dir }}/.."
+        # recurse: yes
+        excludes:
+          - ".*"
+          - "venv"
+          - "playbook"
+
+      register: found_files
+
+    - name: Save found_files globally
+      set_fact:
+        global_found_files: "{{ found_files.files }}"
+      delegate_to: localhost
+
+    # - name: Show found files
+    #   debug:
+    #     var: found_files.files
+
+- name: Ensure environment and copy files to NAS
   hosts: nas
   become: true
-
   tasks:
-    # - name: Ensure Docker is installed
-    #   ansible.builtin.shell: |
-    #     if ! docker --version > /dev/null 2>&1; then
-    #       sudo apt-get update
-    #       sudo apt-get install -y docker.io
-    #     fi
+    # - name: Show found files
+    #   debug:
+    #     var: hostvars['localhost']['global_found_files']
 
     - name: Ensure Docker Compose is installed
       ansible.builtin.shell: |
@@ -19,18 +40,24 @@
           sudo chmod +x /usr/local/bin/docker-compose
         fi
 
-    - name: Copy project files to NAS
-      ansible.builtin.synchronize:
-        src: "{{ playbook_dir }}/.."
-        dest: /volume2/docker/
-        rsync_opts:
-          - "--exclude=venv"
-          - "--exclude=playbook"
-        delete: false
-        archive: true
-        compress: true
+    # - name: Ensure Docker is installed
+    #   ansible.builtin.shell: |
+    #     if ! docker --version > /dev/null 2>&1; then
+    #       sudo apt-get update
+    #       sudo apt-get install -y docker.io
+    #     fi
 
-    - name: Run Docker Compose
-      ansible.builtin.shell: |
-        cd /volume2/docker/send-seather
-        docker-compose up -d
+    - name: Copy project files to NAS
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: /volume2/docker/sendWeather
+        remote_src: no
+      loop: "{{ hostvars['localhost']['global_found_files'] }}"
+# - name: Run Docker Compose on NAS
+#   hosts: nas
+#   become: true
+#   tasks:
+#     - name: Run Docker Compose
+#       ansible.builtin.shell: |
+#         cd /volume2/docker/sendWeather
+#         docker-compose up -d

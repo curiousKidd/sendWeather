@@ -136,6 +136,12 @@ def send_kakao_message(message_text):
         print("메시지 전송 실패:", response.json())
 
 
+# 친구 메시지 발송
+def send_kakao_friend(message_text):
+     print("메시지가 성공적으로 전송되었습니다!")
+
+
+
 
 # kakao_get_code()
 

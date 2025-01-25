@@ -64,8 +64,6 @@ def load_tokens():
     except FileNotFoundError:
         return None
 
-
-
 # access_token 재발급 || 리프레시 토큰 활용
 def refresh_access_token(refresh_token):
     token_url = "https://kauth.kakao.com/oauth/token"
@@ -137,12 +135,80 @@ def send_kakao_message(message_text):
 
 
 # 친구 메시지 발송
-def send_kakao_friend(message_text):
-     print("메시지가 성공적으로 전송되었습니다!")
+def send_message_kakao_friend(message_text):
+    tokens = load_tokens()
+    if not tokens:
+        print("토큰이 없습니다. 처음 인증을 진행하세요.")
+        return
+
+    access_token = tokens["access_token"]
+    refresh_token = tokens["refresh_token"]
+
+    # 토큰 갱신
+    if not access_token:  # 토큰이 없는 경우
+        access_token = refresh_access_token(refresh_token)
+
+    # 메시지 API 호출
+    message_url = "	https://kapi.kakao.com/v1/api/talk/friends/message/default/send"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    data = {
+        "template_object": json.dumps(
+            {
+            "object_type": "text",
+            "text": message_text,
+            "link": {
+                "web_url": "https://weather.com",
+                "mobile_web_url": "https://weather.com"
+            }
+        })  
+    }
+
+    response = requests.post(message_url, headers=headers, data=data)
+    if response.status_code == 200:
+        print("메시지가 성공적으로 전송되었습니다!")
+    elif response.status_code == 401:  # Unauthorized (토큰 만료)
+        print("Access Token이 만료되었습니다. 갱신을 시도합니다.")
+        access_token = refresh_access_token(refresh_token)
+        if access_token:
+            send_kakao_message(message_text)
+    else:
+        print("메시지 전송 실패:", response.json())
 
 
+def get_kakao_friend():
+    tokens = load_tokens()
+    if not tokens:
+        print("토큰이 없습니다. 처음 인증을 진행하세요.")
+        return
+
+    access_token = tokens["access_token"]
+    refresh_token = tokens["refresh_token"]
+
+    # 토큰 갱신
+    if not access_token:  # 토큰이 없는 경우
+        access_token = refresh_access_token(refresh_token)
+
+    # 메시지 API 호출
+    message_url = "https://kapi.kakao.com/v1/api/talk/friends"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    response = requests.post(message_url, headers=headers)
+
+    if response.status_code == 200:
+        print("메시지가 성공적으로 전송되었습니다!")
+    else:
+        print("실패:", response.json())
+
+    print(response)
 
 
 # kakao_get_code()
 
 # kakao_oauth_token()
+
+get_kakao_friend()

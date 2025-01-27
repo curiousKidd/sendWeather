@@ -198,6 +198,8 @@ def get_kakao_friend():
     }
 
     response = requests.post(message_url, headers=headers)
+    # 메시지 전송 실패: {'msg': 'Forbidden', 'code': -403}
+    # <Response [403]>
 
     if response.status_code == 200:
         print("메시지가 성공적으로 전송되었습니다!")

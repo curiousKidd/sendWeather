@@ -22,7 +22,12 @@ def kakao_get_code():
 # 카카오 OAuth URL
 def kakao_oauth_token():
     # 카카오 토큰 발급 URL
-    token_url = "https://kauth.kakao.com/oauth/token"
+    token_url = f"https://kauth.kakao.com/oauth/token"
+    # token_url = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&code={OAUTH_CODE}"
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
     # POST 요청 데이터
     data = {
@@ -33,6 +38,7 @@ def kakao_oauth_token():
     }
 
     response = requests.post(token_url, data=data)
+    print(response)
     tokens = response.json()
 
     # Access Token과 Refresh Token 확인
@@ -211,6 +217,6 @@ def get_kakao_friend():
 
 # kakao_get_code()
 
-# kakao_oauth_token()
+kakao_oauth_token()
 
-get_kakao_friend()
+# get_kakao_friend()

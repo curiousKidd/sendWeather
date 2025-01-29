@@ -8,8 +8,8 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("KAKAO_REST_API_KEY") # 발급받은 restAPI KEY
 REDIRECT_URI =  "http://localhost:3000" # 등록한 Redirect URI
-OAUTH_CODE = os.getenv("KAKAO_OAUTH") # 발급받은 restAPI KEY
-scope = "talk_message"  # 필요한 권한 추가
+OAUTH_CODE = os.getenv("KAKAO_OAUTH") # 발급받은 OAuth KEY
+scope = "talk_message,friends"  # 필요한 권한 추가
 
 # 카카오 로그인 인증 || 1회성 코드 발급
 def kakao_get_code():
@@ -22,12 +22,8 @@ def kakao_get_code():
 # 카카오 OAuth URL
 def kakao_oauth_token():
     # 카카오 토큰 발급 URL
-    token_url = f"https://kauth.kakao.com/oauth/token"
+    token_url = "https://kauth.kakao.com/oauth/token"
     # token_url = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&code={OAUTH_CODE}"
-
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
 
     # POST 요청 데이터
     data = {
@@ -36,9 +32,10 @@ def kakao_oauth_token():
         "redirect_uri": REDIRECT_URI,
         "code": OAUTH_CODE,
     }
-
+    
+    
     response = requests.post(token_url, data=data)
-    print(response)
+    print(response.json())
     tokens = response.json()
 
     # Access Token과 Refresh Token 확인
@@ -198,17 +195,18 @@ def get_kakao_friend():
         access_token = refresh_access_token(refresh_token)
 
     # 메시지 API 호출
-    message_url = "https://kapi.kakao.com/v1/api/talk/friends"
+    url = "https://kapi.kakao.com/v1/api/talk/friends"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
 
-    response = requests.post(message_url, headers=headers)
+    response = requests.post(url, headers=headers)
     # 메시지 전송 실패: {'msg': 'Forbidden', 'code': -403}
     # <Response [403]>
 
     if response.status_code == 200:
         print("메시지가 성공적으로 전송되었습니다!")
+        print(response.json())
     else:
         print("실패:", response.json())
 
@@ -217,6 +215,6 @@ def get_kakao_friend():
 
 # kakao_get_code()
 
-kakao_oauth_token()
+# kakao_oauth_token()
 
-# get_kakao_friend()
+get_kakao_friend()

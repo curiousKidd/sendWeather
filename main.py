@@ -15,7 +15,8 @@ def get_main():
     weather_message = get_open_ai_message()
     # print(weather_message)
 
-    kakao.send_kakao_message(weather_message)
+    # kakao.send_kakao_message(weather_message)
+    kakao.send_kakao_friend_message(weather_message)
 
 def get_open_ai_message():
     location = "Seoul"

@@ -138,7 +138,7 @@ def send_kakao_message(message_text):
 
 
 # 친구 메시지 발송
-def send_message_kakao_friend(message_text):
+def send_kakao_friend_message(message_text):
     tokens = load_tokens()
     if not tokens:
         print("토큰이 없습니다. 처음 인증을 진행하세요.")
@@ -151,13 +151,23 @@ def send_message_kakao_friend(message_text):
     if not access_token:  # 토큰이 없는 경우
         access_token = refresh_access_token(refresh_token)
 
+    friends = get_kakao_friend()
+
     # 메시지 API 호출
     message_url = "	https://kapi.kakao.com/v1/api/talk/friends/message/default/send"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
 
+    uuids = []
+
+    if friends:
+        for friend in friends:
+            uuids.append(friend.get("uuid"))
+
+
     data = {
+        "receiver_uuids": json.dumps(uuids),
         "template_object": json.dumps(
             {
             "object_type": "text",
@@ -171,16 +181,18 @@ def send_message_kakao_friend(message_text):
 
     response = requests.post(message_url, headers=headers, data=data)
     if response.status_code == 200:
-        print("메시지가 성공적으로 전송되었습니다!")
+        print(f"{friend['profile_nickname']} 메시지가 성공적으로 전송되었습니다!")
+
     elif response.status_code == 401:  # Unauthorized (토큰 만료)
         print("Access Token이 만료되었습니다. 갱신을 시도합니다.")
         access_token = refresh_access_token(refresh_token)
         if access_token:
-            send_kakao_message(message_text)
+            send_kakao_friend_message(message_text)
     else:
-        print("메시지 전송 실패:", response.json())
+        print(f"{friend['profile_nickname']} 메시지 전송 실패:", response.json())
 
 
+# 친구 목록 가져오기
 def get_kakao_friend():
     tokens = load_tokens()
     if not tokens:
@@ -200,21 +212,20 @@ def get_kakao_friend():
         "Authorization": f"Bearer {access_token}",
     }
 
-    response = requests.post(url, headers=headers)
-    # 메시지 전송 실패: {'msg': 'Forbidden', 'code': -403}
-    # <Response [403]>
+    response = requests.get(url, headers=headers)
 
-    if response.status_code == 200:
-        print("메시지가 성공적으로 전송되었습니다!")
-        print(response.json())
-    else:
-        print("실패:", response.json())
-
-    print(response)
+    if response.status_code != 200:
+        print("친구 목록 가져오기 실패:", response.json())
 
 
+    return response.json().get("elements") 
+
+    
 # kakao_get_code()
 
 # kakao_oauth_token()
 
-get_kakao_friend()
+# get_kakao_friend()
+
+
+# send_kakao_friend_message("test")
